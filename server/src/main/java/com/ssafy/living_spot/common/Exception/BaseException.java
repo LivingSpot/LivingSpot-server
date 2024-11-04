@@ -13,7 +13,7 @@ public class BaseException extends RuntimeException{
     ErrorMessage errorMessage;
 
     public BaseException(HttpStatus status, ErrorMessage errorMessage) {
-        super(errorMessage.getMessage());
+        super(errorMessage.toString());
         this.status = status;
         this.errorMessage = errorMessage;
     }
