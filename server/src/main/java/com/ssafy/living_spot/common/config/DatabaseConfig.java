@@ -21,12 +21,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.ssafy.living_spot",
+        basePackages = "com.ssafy.living_spot.**.repository.jpa",
         entityManagerFactoryRef = "entityManagerFactory",
         transactionManagerRef = "transactionManager"
 )
 @MapperScan(
-        basePackages = "com.ssafy",
+        basePackages = "com.ssafy.living_spot.**.repository.mybatis",
         sqlSessionFactoryRef = "sqlSessionFactory",
         sqlSessionTemplateRef = "sqlSessionTemplate"
 )
