@@ -26,6 +26,6 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Member getMemberByMybatis(MemberIdParam memberIdParam) {
-        return memberMapper.selectMemberById(memberIdParam);
+        return memberMapper.selectMemberById(memberIdParam.id());
     }
 }
