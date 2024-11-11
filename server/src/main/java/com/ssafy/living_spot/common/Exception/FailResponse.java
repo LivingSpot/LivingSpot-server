@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 public class FailResponse {
     private final int status;
-    private final ErrorMessage errorMessage;
+    private final String errorMessage;
 
-    public static FailResponse fail(int status, ErrorMessage errorMessage) {
+    public static FailResponse fail(int status, String errorMessage) {
         return FailResponse.builder()
                 .status(status)
                 .errorMessage(errorMessage)
