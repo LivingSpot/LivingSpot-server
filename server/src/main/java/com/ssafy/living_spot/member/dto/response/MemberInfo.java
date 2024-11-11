@@ -1,4 +1,4 @@
-package com.ssafy.living_spot.member.dto;
+package com.ssafy.living_spot.member.dto.response;
 
 public record MemberInfo(
         Long id,
