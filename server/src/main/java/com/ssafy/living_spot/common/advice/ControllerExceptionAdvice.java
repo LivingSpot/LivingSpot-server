@@ -1,7 +1,7 @@
 package com.ssafy.living_spot.common.advice;
 
-import com.ssafy.living_spot.common.Exception.BaseException;
-import com.ssafy.living_spot.common.Exception.FailResponse;
+import com.ssafy.living_spot.common.exception.BaseException;
+import com.ssafy.living_spot.common.exception.FailResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

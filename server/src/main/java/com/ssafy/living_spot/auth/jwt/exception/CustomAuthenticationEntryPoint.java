@@ -3,7 +3,7 @@ package com.ssafy.living_spot.auth.jwt.exception;
 import static com.ssafy.living_spot.auth.jwt.exception.JwtExceptionType.FAILURE_AUTHENTICATION;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.living_spot.common.Exception.FailResponse;
+import com.ssafy.living_spot.common.exception.FailResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

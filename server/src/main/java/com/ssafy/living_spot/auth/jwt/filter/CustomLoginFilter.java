@@ -1,13 +1,13 @@
 package com.ssafy.living_spot.auth.jwt.filter;
 
-import static com.ssafy.living_spot.common.Exception.ErrorMessage.INVALID_REQUEST_FORMAT;
+import static com.ssafy.living_spot.common.exception.ErrorMessage.INVALID_REQUEST_FORMAT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
 import com.ssafy.living_spot.auth.jwt.dto.request.LoginRequest;
 import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
 import com.ssafy.living_spot.auth.jwt.exception.CustomAuthenticationEntryPoint;
-import com.ssafy.living_spot.common.Exception.BadRequestException;
+import com.ssafy.living_spot.common.exception.BadRequestException;
 import com.ssafy.living_spot.member.domain.Member;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;

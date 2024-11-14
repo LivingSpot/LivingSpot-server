@@ -1,6 +1,6 @@
 package com.ssafy.living_spot.auth.jwt.service;
 
-import static com.ssafy.living_spot.common.Exception.ErrorMessage.NOT_EXIST_EMAIL;
+import static com.ssafy.living_spot.common.exception.ErrorMessage.NOT_EXIST_EMAIL;
 
 import com.ssafy.living_spot.member.service.MemberService;
 import lombok.RequiredArgsConstructor;

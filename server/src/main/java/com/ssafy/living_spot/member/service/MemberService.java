@@ -1,9 +1,9 @@
 package com.ssafy.living_spot.member.service;
 
-import static com.ssafy.living_spot.common.Exception.ErrorMessage.ALREADY_EXIST_EMAIL;
+import static com.ssafy.living_spot.common.exception.ErrorMessage.ALREADY_EXIST_EMAIL;
 import static com.ssafy.living_spot.member.domain.Role.ROLE_USER;
 
-import com.ssafy.living_spot.common.Exception.BadRequestException;
+import com.ssafy.living_spot.common.exception.BadRequestException;
 import com.ssafy.living_spot.member.domain.Member;
 import com.ssafy.living_spot.member.dto.request.MemberIdParam;
 import com.ssafy.living_spot.member.dto.request.MemberSignUpRequest;
