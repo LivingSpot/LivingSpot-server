@@ -1,6 +1,7 @@
 package com.ssafy.living_spot.auth.jwt.component;
 
 import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
+import com.ssafy.living_spot.common.util.RedisUtil;
 import com.ssafy.living_spot.member.domain.Member;
 import io.jsonwebtoken.Jwts;
 import java.util.Date;
@@ -14,10 +15,13 @@ public class JwtUtil {
 
     private final JwtSecretKey jwtSecretKey;
     private final JwtProperties jwtProperties;
+    private final RedisUtil redisUtil;
 
     public JwtToken generateTokens(Member member) {
         String accessToken = generateAccessToken(member);
         String refreshToken = generateRefreshToken(member);
+
+        storeRefreshToken(member.getId(), refreshToken);
 
         return new JwtToken(accessToken, refreshToken);
     }
@@ -62,6 +66,10 @@ public class JwtUtil {
                 .build();
     }
 
+    /**
+     * JWT 관련 Method
+     */
+
     public String getUid(String token) {
         return Jwts.parser().verifyWith(jwtSecretKey.getSecretKey()).build().parseSignedClaims(token).getPayload()
                 .get("id", String.class);
@@ -75,5 +83,27 @@ public class JwtUtil {
     public Boolean isExpired(String token) {
         return Jwts.parser().verifyWith(jwtSecretKey.getSecretKey()).build().parseSignedClaims(token).getPayload()
                 .getExpiration().before(new Date());
+    }
+
+    /**
+     * Redis 관련 Method
+     */
+
+    // Redis에 Refresh Token 저장
+    private void storeRefreshToken(
+            Long memberId,
+            String refreshToken
+    ) {
+        redisUtil.delete(memberId.toString()); // 기존 Refresh Token 무효화
+        redisUtil.setValueWithExpiration(memberId.toString(), refreshToken, jwtProperties.getRefreshTokenExpiration());
+    }
+
+    // Redis에서 Refresh Token을 검증
+    public boolean validateRefreshToken(
+            Long memberId,
+            String refreshToken
+    ) {
+        String storedToken = redisUtil.getValue(memberId.toString());
+        return storedToken != null && storedToken.equals(refreshToken);
     }
 }
