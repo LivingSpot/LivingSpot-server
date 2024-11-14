@@ -1,6 +1,7 @@
 package com.ssafy.living_spot.member.service;
 
 import static com.ssafy.living_spot.common.Exception.ErrorMessage.ALREADY_EXIST_EMAIL;
+import static com.ssafy.living_spot.member.domain.Role.ROLE_USER;
 
 import com.ssafy.living_spot.common.Exception.BadRequestException;
 import com.ssafy.living_spot.member.domain.Member;
@@ -8,6 +9,7 @@ import com.ssafy.living_spot.member.dto.request.MemberIdParam;
 import com.ssafy.living_spot.member.dto.request.MemberSignUpRequest;
 import com.ssafy.living_spot.member.repository.jpa.MemberRepository;
 import com.ssafy.living_spot.member.repository.mybatis.MemberMapper;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,9 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
-    public Long signUp(MemberSignUpRequest memberSignUpRequest) {
+    public Long signUp(
+            MemberSignUpRequest memberSignUpRequest
+    ) {
         if (memberRepository.existsByEmail(memberSignUpRequest.email())) {
             throw new BadRequestException(ALREADY_EXIST_EMAIL);
         }
@@ -31,6 +35,7 @@ public class MemberService {
                 .nickname(memberSignUpRequest.nickname())
                 .email(memberSignUpRequest.email())
                 .password(bCryptPasswordEncoder.encode(memberSignUpRequest.password()))
+                .role(ROLE_USER)
                 .build();
 
         return memberRepository.save(member).getId();
@@ -44,5 +49,9 @@ public class MemberService {
     @Transactional(readOnly = true)
     public Member getMemberByMybatis(MemberIdParam memberIdParam) {
         return memberMapper.selectMemberById(memberIdParam.id());
+    }
+
+    public Optional<Member> findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 }
