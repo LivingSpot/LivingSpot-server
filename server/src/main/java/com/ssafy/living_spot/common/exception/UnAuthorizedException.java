@@ -1,4 +1,4 @@
-package com.ssafy.living_spot.common.Exception;
+package com.ssafy.living_spot.common.exception;
 
 import org.springframework.http.HttpStatus;
 
