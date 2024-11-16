@@ -6,6 +6,7 @@ import static com.ssafy.living_spot.common.exception.ErrorMessage.INVALID_REQUES
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
+import com.ssafy.living_spot.auth.jwt.dto.MemberTokenInfo;
 import com.ssafy.living_spot.auth.jwt.dto.request.LoginRequest;
 import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
 import com.ssafy.living_spot.auth.jwt.exception.CustomAuthenticationEntryPoint;
@@ -70,7 +71,8 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
-        JwtToken tokenResponse = jwtUtil.generateTokens(member);
+        MemberTokenInfo memberTokenInfo = new MemberTokenInfo(member.getId(), member.getRole().toString());
+        JwtToken tokenResponse = jwtUtil.generateTokens(memberTokenInfo);
 
         ResponseCookie refreshTokenCookie = jwtUtil.createRefreshTokenCookie(tokenResponse.refreshToken());
         log.info("refreshTokenCookie: {}", refreshTokenCookie);
