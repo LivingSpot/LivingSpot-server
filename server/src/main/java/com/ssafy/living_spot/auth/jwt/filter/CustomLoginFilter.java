@@ -1,5 +1,7 @@
 package com.ssafy.living_spot.auth.jwt.filter;
 
+import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.AUTHORIZATION_HEADER;
+import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.BEARER_PREFIX;
 import static com.ssafy.living_spot.common.exception.ErrorMessage.INVALID_REQUEST_FORMAT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +12,6 @@ import com.ssafy.living_spot.auth.jwt.exception.CustomAuthenticationEntryPoint;
 import com.ssafy.living_spot.common.exception.BadRequestException;
 import com.ssafy.living_spot.member.domain.Member;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -73,7 +74,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         ResponseCookie refreshTokenCookie = jwtUtil.createRefreshTokenCookie(tokenResponse.refreshToken());
         log.info("refreshTokenCookie: {}", refreshTokenCookie);
-        response.setHeader("Authorization", "Bearer " + tokenResponse.accessToken());
+        response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + tokenResponse.accessToken());
         response.addHeader("set-cookie", refreshTokenCookie.toString());
         log.info(response.getHeader("set-cookie"));
     }
@@ -84,10 +85,8 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse response,
             AuthenticationException failed
     ) throws IOException {
-        Cookie expiredCookie = new Cookie("refresh_token", null);
-        expiredCookie.setMaxAge(0);
-        expiredCookie.setPath("/");
-        response.addCookie(expiredCookie);
+        ResponseCookie deletedRefreshTokenCookie = jwtUtil.deleteRefreshTokenCookie();
+        response.addHeader("set-cookie", deletedRefreshTokenCookie.toString());
 
         customAuthenticationEntryPoint.commence(request, response, failed);
     }

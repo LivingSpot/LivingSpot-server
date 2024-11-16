@@ -1,5 +1,7 @@
 package com.ssafy.living_spot.auth.jwt.component;
 
+import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.REFRESH_TOKEN_PREFIX;
+
 import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
 import com.ssafy.living_spot.common.util.RedisUtil;
 import com.ssafy.living_spot.member.domain.Member;
@@ -94,8 +96,9 @@ public class JwtUtil {
             Long memberId,
             String refreshToken
     ) {
-        redisUtil.delete(memberId.toString()); // 기존 Refresh Token 무효화
-        redisUtil.setValueWithExpiration(memberId.toString(), refreshToken, jwtProperties.getRefreshTokenExpiration());
+        String key = REFRESH_TOKEN_PREFIX + memberId; // 접두사를 추가
+        redisUtil.delete(key); // 기존 Refresh Token 무효화
+        redisUtil.setValueWithExpiration(key, refreshToken, jwtProperties.getRefreshTokenExpiration());
     }
 
     // Redis에서 Refresh Token을 검증
@@ -103,7 +106,8 @@ public class JwtUtil {
             Long memberId,
             String refreshToken
     ) {
-        String storedToken = redisUtil.getValue(memberId.toString());
+        String key = REFRESH_TOKEN_PREFIX + memberId;
+        String storedToken = redisUtil.getValue(key);
         return storedToken != null && storedToken.equals(refreshToken);
     }
 }

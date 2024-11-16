@@ -1,5 +1,8 @@
 package com.ssafy.living_spot.auth.jwt.filter;
 
+import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.AUTHORIZATION_HEADER;
+import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.BEARER_PREFIX;
+
 import com.ssafy.living_spot.auth.jwt.component.JwtSecretKey;
 import com.ssafy.living_spot.auth.jwt.component.JwtTokenValidator;
 import com.ssafy.living_spot.auth.jwt.exception.JwtAuthenticationException;
@@ -23,8 +26,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenValidator jwtTokenValidator;
     private final JwtSecretKey secretKey;
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
     protected void doFilterInternal(
@@ -42,7 +43,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 memberId,
                                 null,
-                                Collections.singleton(new SimpleGrantedAuthority("ROLE_" + extractRole(getClaims(token))))
+                                Collections.singleton(
+                                        new SimpleGrantedAuthority("ROLE_" + extractRole(getClaims(token))))
                         );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
