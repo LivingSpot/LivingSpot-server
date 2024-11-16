@@ -1,7 +1,5 @@
 package com.ssafy.living_spot.auth.jwt.exception;
 
-import static com.ssafy.living_spot.auth.jwt.exception.JwtExceptionType.FAILURE_AUTHENTICATION;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.living_spot.common.exception.FailResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +23,25 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             HttpServletResponse response,
             AuthenticationException authException
     ) throws IOException {
-        sendErrorResponse(response, HttpStatus.UNAUTHORIZED, FAILURE_AUTHENTICATION.getMessage());
+        JwtExceptionType exceptionType = determineExceptionType(authException);
+        sendErrorResponse(response, HttpStatus.UNAUTHORIZED, exceptionType.getMessage());
+    }
+
+    private JwtExceptionType determineExceptionType(AuthenticationException authException) {
+        switch (authException.getClass().getSimpleName()) {
+            case "BadCredentialsException":
+                return JwtExceptionType.INVALID_EMAIL_OR_PASSWORD;
+            case "ExpiredJwtException":
+                return JwtExceptionType.EXPIRED_JWT_TOKEN;
+            case "SignatureException":
+                return JwtExceptionType.INVALID_JWT_SIGNATURE;
+            case "MalformedJwtException":
+                return JwtExceptionType.INVALID_JWT_TOKEN;
+            case "UnsupportedJwtException":
+                return JwtExceptionType.UNSUPPORTED_JWT_TOKEN;
+            default:
+                return JwtExceptionType.FAILURE_AUTHENTICATION;
+        }
     }
 
     public void sendErrorResponse(

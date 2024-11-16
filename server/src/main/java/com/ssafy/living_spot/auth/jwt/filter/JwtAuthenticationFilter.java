@@ -4,12 +4,11 @@ import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.AUTHORIZATIO
 import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.BEARER_PREFIX;
 import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
 
-import com.ssafy.living_spot.auth.jwt.component.JwtSecretKey;
 import com.ssafy.living_spot.auth.jwt.component.JwtTokenValidator;
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
 import com.ssafy.living_spot.auth.jwt.dto.MemberTokenInfo;
 import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
-import com.ssafy.living_spot.auth.jwt.exception.JwtAuthenticationException;
+import com.ssafy.living_spot.auth.jwt.exception.CustomAuthenticationEntryPoint;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -23,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -33,8 +33,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenValidator jwtTokenValidator;
-    private final JwtSecretKey secretKey;
     private final JwtUtil jwtUtil;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Override
     protected void doFilterInternal(
@@ -56,8 +56,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     processExpiredAccessToken(request, response);
                 }
             }
-        } catch (JwtAuthenticationException e) {
-
+        } catch (AuthenticationException e) {
+            customAuthenticationEntryPoint.commence(request, response, e);
             SecurityContextHolder.clearContext();
             response.addHeader("Set-Cookie", jwtUtil.deleteRefreshTokenCookie().toString());
         }
