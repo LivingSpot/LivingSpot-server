@@ -1,8 +1,12 @@
 package com.ssafy.living_spot.auth.jwt.component;
 
+import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
+import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.REFRESH_TOKEN_PREFIX;
+
+import com.ssafy.living_spot.auth.jwt.dto.MemberTokenInfo;
 import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
 import com.ssafy.living_spot.common.util.RedisUtil;
-import com.ssafy.living_spot.member.domain.Member;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
@@ -17,29 +21,29 @@ public class JwtUtil {
     private final JwtProperties jwtProperties;
     private final RedisUtil redisUtil;
 
-    public JwtToken generateTokens(Member member) {
-        String accessToken = generateAccessToken(member);
-        String refreshToken = generateRefreshToken(member);
+    public JwtToken generateTokens(MemberTokenInfo memberTokenInfo) {
+        String accessToken = generateAccessToken(memberTokenInfo);
+        String refreshToken = generateRefreshToken(memberTokenInfo);
 
-        storeRefreshToken(member.getId(), refreshToken);
+        storeRefreshToken(memberTokenInfo.id(), refreshToken);
 
         return new JwtToken(accessToken, refreshToken);
     }
 
-    private String generateAccessToken(Member member) {
+    private String generateAccessToken(MemberTokenInfo memberTokenInfo) {
         return Jwts.builder()
-                .claim("id", member.getId())
-                .claim("role", member.getRole())
+                .claim("id", memberTokenInfo.id())
+                .claim("role", memberTokenInfo.role())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenExpiration()))
                 .signWith(jwtSecretKey.getSecretKey())
                 .compact();
     }
 
-    private String generateRefreshToken(Member member) {
+    private String generateRefreshToken(MemberTokenInfo memberTokenInfo) {
         return Jwts.builder()
-                .claim("id", member.getId())
-                .claim("role", member.getRole())
+                .claim("id", memberTokenInfo.id())
+                .claim("role", memberTokenInfo.role())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshTokenExpiration()))
                 .signWith(jwtSecretKey.getSecretKey())
@@ -47,7 +51,7 @@ public class JwtUtil {
     }
 
     public ResponseCookie createRefreshTokenCookie(String refreshToken) {
-        return ResponseCookie.from("refresh_token", refreshToken)
+        return ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, refreshToken)
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
@@ -57,7 +61,7 @@ public class JwtUtil {
     }
 
     public ResponseCookie deleteRefreshTokenCookie() {
-        return ResponseCookie.from("refresh_token", "")
+        return ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, "")
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
@@ -70,19 +74,24 @@ public class JwtUtil {
      * JWT 관련 Method
      */
 
-    public String getUid(String token) {
-        return Jwts.parser().verifyWith(jwtSecretKey.getSecretKey()).build().parseSignedClaims(token).getPayload()
-                .get("id", String.class);
+    public String getMemberId(String token) {
+        return getClaims(token).get("id", String.class);
     }
 
     public String getRole(String token) {
-        return Jwts.parser().verifyWith(jwtSecretKey.getSecretKey()).build().parseSignedClaims(token).getPayload()
-                .get("role", String.class);
+        return getClaims(token).get("role", String.class);
     }
 
     public Boolean isExpired(String token) {
-        return Jwts.parser().verifyWith(jwtSecretKey.getSecretKey()).build().parseSignedClaims(token).getPayload()
-                .getExpiration().before(new Date());
+        return getClaims(token).getExpiration().before(new Date());
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(jwtSecretKey.getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     /**
@@ -94,8 +103,9 @@ public class JwtUtil {
             Long memberId,
             String refreshToken
     ) {
-        redisUtil.delete(memberId.toString()); // 기존 Refresh Token 무효화
-        redisUtil.setValueWithExpiration(memberId.toString(), refreshToken, jwtProperties.getRefreshTokenExpiration());
+        String key = REFRESH_TOKEN_PREFIX + memberId; // 접두사를 추가
+        redisUtil.delete(key); // 기존 Refresh Token 무효화
+        redisUtil.setValueWithExpiration(key, refreshToken, jwtProperties.getRefreshTokenExpiration());
     }
 
     // Redis에서 Refresh Token을 검증
@@ -103,7 +113,8 @@ public class JwtUtil {
             Long memberId,
             String refreshToken
     ) {
-        String storedToken = redisUtil.getValue(memberId.toString());
+        String key = REFRESH_TOKEN_PREFIX + memberId;
+        String storedToken = redisUtil.getValue(key);
         return storedToken != null && storedToken.equals(refreshToken);
     }
 }
