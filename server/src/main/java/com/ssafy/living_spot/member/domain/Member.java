@@ -1,6 +1,7 @@
 package com.ssafy.living_spot.member.domain;
 
 import com.ssafy.living_spot.common.auditing.BaseTimeEntity;
+import com.ssafy.living_spot.member.domain.oauth.AuthProvider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,8 +36,6 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     private String name;
 
-    private String nickname;
-
     private String email;
 
     private String password;
@@ -53,9 +52,8 @@ public class Member extends BaseTimeEntity implements UserDetails {
     }
 
     @Builder
-    public Member(String name, String nickname, String email, String password, Role role) {
+    public Member(String name, String email, String password, Role role) {
         this.name = name;
-        this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.role = role;

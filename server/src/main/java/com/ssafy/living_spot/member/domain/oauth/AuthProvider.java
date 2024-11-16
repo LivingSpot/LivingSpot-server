@@ -1,4 +1,4 @@
-package com.ssafy.living_spot.member.domain;
+package com.ssafy.living_spot.member.domain.oauth;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -32,7 +32,6 @@ public class MemberService {
 
         Member member = Member.builder()
                 .name(memberSignUpRequest.name())
-                .nickname(memberSignUpRequest.nickname())
                 .email(memberSignUpRequest.email())
                 .password(bCryptPasswordEncoder.encode(memberSignUpRequest.password()))
                 .role(ROLE_USER)

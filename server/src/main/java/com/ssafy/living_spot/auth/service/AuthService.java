@@ -1,4 +1,4 @@
-package com.ssafy.living_spot.auth.jwt.service;
+package com.ssafy.living_spot.auth.service;
 
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
 import com.ssafy.living_spot.auth.jwt.dto.request.LoginRequest;

@@ -1,4 +1,4 @@
-package com.ssafy.living_spot.auth.jwt.service;
+package com.ssafy.living_spot.auth.service;
 
 import static com.ssafy.living_spot.common.exception.ErrorMessage.NOT_EXIST_EMAIL;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService {
+public class PrincipalDetailsService implements UserDetailsService {
     private final MemberService memberService;
 
     @Override

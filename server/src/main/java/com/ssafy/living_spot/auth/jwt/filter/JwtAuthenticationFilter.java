@@ -20,11 +20,13 @@ import java.util.Collections;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -36,12 +38,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
+    private static final AntPathRequestMatcher LOGIN_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/auth/login", HttpMethod.POST.toString());
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+        if(shouldNotFilter(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             String accessToken = extractAccessToken(request);
             log.info("Access Token: {}", accessToken);
@@ -63,6 +72,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return LOGIN_PATH_REQUEST_MATCHER.matches(request);
     }
 
     private String extractAccessToken(HttpServletRequest request) {
@@ -88,7 +101,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void processExpiredAccessToken(HttpServletRequest request, HttpServletResponse response) {
         Optional<Cookie> refreshTokenCookie = extractRefreshTokenFromCookie(request);
-        System.out.println("ASddasda");
+
         if (refreshTokenCookie.isPresent()) {
             String refreshToken = refreshTokenCookie.get().getValue();
 

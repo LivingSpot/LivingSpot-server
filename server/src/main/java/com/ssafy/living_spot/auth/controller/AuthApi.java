@@ -1,7 +1,7 @@
 package com.ssafy.living_spot.auth.controller;
 
 import com.ssafy.living_spot.auth.jwt.dto.request.LoginRequest;
-import com.ssafy.living_spot.auth.jwt.service.AuthService;
+import com.ssafy.living_spot.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
