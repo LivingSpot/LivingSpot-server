@@ -31,14 +31,14 @@ public class KakaoUserInfo extends OAuth2UserInfo {
     @Override
     public String getName() {
         return Optional.ofNullable(getResponse())
-                .map(response -> (String) response.get("nickname"))
+                .map(response -> (String) response.get("profile_nickname"))
                 .orElse(null);
     }
 
     @Override
     public String getProfileImageUrl() {
         return Optional.ofNullable(getResponse())
-                .map(response -> (String) response.get("thumbnail_image"))
+                .map(response -> (String) response.get("profile_image"))
                 .orElse(null);
     }
 }

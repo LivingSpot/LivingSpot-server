@@ -5,13 +5,14 @@ import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.BEARER_PREFI
 import static com.ssafy.living_spot.common.exception.ErrorMessage.INVALID_REQUEST_FORMAT;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.living_spot.auth.exception.CustomAuthenticationEntryPoint;
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
 import com.ssafy.living_spot.auth.jwt.dto.MemberTokenInfo;
 import com.ssafy.living_spot.auth.jwt.dto.request.LoginRequest;
 import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
-import com.ssafy.living_spot.auth.exception.CustomAuthenticationEntryPoint;
 import com.ssafy.living_spot.common.exception.BadRequestException;
 import com.ssafy.living_spot.member.domain.Member;
+import com.ssafy.living_spot.member.domain.PrincipalDetail;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,8 +33,11 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    public CustomLoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
-                             CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+    public CustomLoginFilter(
+            AuthenticationManager authenticationManager,
+            JwtUtil jwtUtil,
+            CustomAuthenticationEntryPoint customAuthenticationEntryPoint
+    ) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
@@ -68,15 +72,20 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-                                            Authentication authentication) {
-        Member member = (Member) authentication.getPrincipal();
+    protected void successfulAuthentication(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain chain,
+            Authentication authentication
+    ) {
+        PrincipalDetail principalDetail = (PrincipalDetail) authentication.getPrincipal();
+        Member member = principalDetail.getMember();
         MemberTokenInfo memberTokenInfo = new MemberTokenInfo(member.getId(), member.getRole().toString());
-        JwtToken tokenResponse = jwtUtil.generateTokens(memberTokenInfo);
+        JwtToken jwtToken = jwtUtil.generateTokens(memberTokenInfo);
 
-        ResponseCookie refreshTokenCookie = jwtUtil.createRefreshTokenCookie(tokenResponse.refreshToken());
+        ResponseCookie refreshTokenCookie = jwtUtil.createRefreshTokenCookie(jwtToken.refreshToken());
         log.info("refreshTokenCookie: {}", refreshTokenCookie);
-        response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + tokenResponse.accessToken());
+        response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + jwtToken.accessToken());
         response.addHeader("set-cookie", refreshTokenCookie.toString());
         log.info(response.getHeader("set-cookie"));
     }

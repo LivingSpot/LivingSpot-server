@@ -1,10 +1,10 @@
 package com.ssafy.living_spot.auth.jwt.component;
 
-import static com.ssafy.living_spot.auth.exception.JwtExceptionType.EMPTY_JWT;
-import static com.ssafy.living_spot.auth.exception.JwtExceptionType.EXPIRED_JWT_TOKEN;
-import static com.ssafy.living_spot.auth.exception.JwtExceptionType.INVALID_JWT_SIGNATURE;
-import static com.ssafy.living_spot.auth.exception.JwtExceptionType.INVALID_JWT_TOKEN;
-import static com.ssafy.living_spot.auth.exception.JwtExceptionType.UNSUPPORTED_JWT_TOKEN;
+import static com.ssafy.living_spot.auth.exception.AuthExceptionType.EMPTY_JWT;
+import static com.ssafy.living_spot.auth.exception.AuthExceptionType.EXPIRED_JWT_TOKEN;
+import static com.ssafy.living_spot.auth.exception.AuthExceptionType.INVALID_JWT_SIGNATURE;
+import static com.ssafy.living_spot.auth.exception.AuthExceptionType.INVALID_JWT_TOKEN;
+import static com.ssafy.living_spot.auth.exception.AuthExceptionType.UNSUPPORTED_JWT_TOKEN;
 
 import com.ssafy.living_spot.auth.exception.JwtAuthenticationException;
 import io.jsonwebtoken.ExpiredJwtException;

@@ -1,6 +1,6 @@
 package com.ssafy.living_spot.common.exception;
 
-import com.ssafy.living_spot.auth.exception.JwtExceptionType;
+import com.ssafy.living_spot.auth.exception.AuthExceptionType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class BaseException extends RuntimeException{
         this.errorMessage = errorMessage;
     }
 
-    public BaseException(HttpStatus status, JwtExceptionType errorMessage) {
+    public BaseException(HttpStatus status, AuthExceptionType errorMessage) {
         super(errorMessage.toString());
         this.status = status;
         this.errorMessage = ErrorMessage.valueOf(errorMessage.toString());

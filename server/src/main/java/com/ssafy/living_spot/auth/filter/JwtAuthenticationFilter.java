@@ -68,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (AuthenticationException e) {
             customAuthenticationEntryPoint.commence(request, response, e);
             SecurityContextHolder.clearContext();
-            response.addHeader("Set-Cookie", jwtUtil.deleteRefreshTokenCookie().toString());
+            response.addHeader("set-Cookie", jwtUtil.deleteRefreshTokenCookie().toString());
         }
 
         filterChain.doFilter(request, response);
@@ -99,7 +99,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private void processExpiredAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    private void processExpiredAccessToken(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
         Optional<Cookie> refreshTokenCookie = extractRefreshTokenFromCookie(request);
 
         if (refreshTokenCookie.isPresent()) {
@@ -125,7 +128,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     // 새로운 토큰을 응답 헤더에 설정
                     response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + newTokens.accessToken());
                     ResponseCookie newRefreshTokenCookie = jwtUtil.createRefreshTokenCookie(newTokens.refreshToken());
-                    response.addHeader("Set-Cookie", newRefreshTokenCookie.toString());
+                    response.addHeader("set-cookie", newRefreshTokenCookie.toString());
 
                     // SecurityContext 설정
                     UsernamePasswordAuthenticationToken authentication =
@@ -138,12 +141,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 } else {
                     // Refresh Token이 유효하지 않은 경우
                     SecurityContextHolder.clearContext();
-                    response.addHeader("Set-Cookie", jwtUtil.deleteRefreshTokenCookie().toString());
+                    response.addHeader("set-cookie", jwtUtil.deleteRefreshTokenCookie().toString());
                 }
             } else {
                 // Refresh Token이 만료된 경우
                 SecurityContextHolder.clearContext();
-                response.addHeader("Set-Cookie", jwtUtil.deleteRefreshTokenCookie().toString());
+                response.addHeader("set-cookie", jwtUtil.deleteRefreshTokenCookie().toString());
             }
         }
     }

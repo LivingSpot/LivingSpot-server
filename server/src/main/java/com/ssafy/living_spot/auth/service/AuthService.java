@@ -1,6 +1,5 @@
 package com.ssafy.living_spot.auth.service;
 
-import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
 import com.ssafy.living_spot.auth.jwt.dto.request.LoginRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,9 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
 
-    public void loginWithCredentials(LoginRequest loginRequest, HttpServletResponse response) {
+    public void loginWithCredentials(
+            LoginRequest loginRequest,
+            HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password())
         );

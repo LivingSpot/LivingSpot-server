@@ -24,7 +24,7 @@ public class PrincipalDetail implements UserDetails, OAuth2User {
 
     @Override
     public String getName() {
-        return null;
+        return member.getName();
     }
 
     @Override
@@ -46,12 +46,12 @@ public class PrincipalDetail implements UserDetails, OAuth2User {
 
     @Override
     public String getPassword() {
-        return null;
+        return member.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return member.getName();
     }
 
     @Override

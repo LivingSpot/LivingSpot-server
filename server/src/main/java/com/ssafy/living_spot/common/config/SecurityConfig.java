@@ -1,9 +1,12 @@
 package com.ssafy.living_spot.common.config;
 
-import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
 import com.ssafy.living_spot.auth.exception.CustomAuthenticationEntryPoint;
 import com.ssafy.living_spot.auth.filter.CustomLoginFilter;
 import com.ssafy.living_spot.auth.filter.JwtAuthenticationFilter;
+import com.ssafy.living_spot.auth.filter.OAuth2AuthenticationFailureHandler;
+import com.ssafy.living_spot.auth.filter.OAuth2AuthenticationSuccessHandler;
+import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
+import com.ssafy.living_spot.auth.service.PrincipalOauth2UserService;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +47,11 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final JwtUtil jwtUtil;
+    /**
+     * Oauth2
+     */
+    private final PrincipalOauth2UserService principalOauth2UserService;
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -71,6 +79,13 @@ public class SecurityConfig {
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )
+                .oauth2Login((oauth2) -> oauth2
+                        .loginPage("/auth/login/oauth2")
+                        .successHandler(oAuth2AuthenticationSuccessHandler())
+                        .failureHandler(oAuth2AuthenticationFailureHandler())
+                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
+                                .userService(principalOauth2UserService)))
+
                 .addFilterAt(new CustomLoginFilter(
                                 authenticationManager(authenticationConfiguration),
                                 jwtUtil,
@@ -86,6 +101,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // OAuth2 핸들러 Bean
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -97,5 +113,15 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
+        return new OAuth2AuthenticationSuccessHandler(jwtUtil);
+    }
+
+    @Bean
+    public OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler() {
+        return new OAuth2AuthenticationFailureHandler();
     }
 }

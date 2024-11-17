@@ -23,24 +23,24 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             HttpServletResponse response,
             AuthenticationException authException
     ) throws IOException {
-        JwtExceptionType exceptionType = determineExceptionType(authException);
+        AuthExceptionType exceptionType = determineExceptionType(authException);
         sendErrorResponse(response, HttpStatus.UNAUTHORIZED, exceptionType.getMessage());
     }
 
-    private JwtExceptionType determineExceptionType(AuthenticationException authException) {
+    private AuthExceptionType determineExceptionType(AuthenticationException authException) {
         switch (authException.getClass().getSimpleName()) {
             case "BadCredentialsException":
-                return JwtExceptionType.INVALID_EMAIL_OR_PASSWORD;
+                return AuthExceptionType.INVALID_EMAIL_OR_PASSWORD;
             case "ExpiredJwtException":
-                return JwtExceptionType.EXPIRED_JWT_TOKEN;
+                return AuthExceptionType.EXPIRED_JWT_TOKEN;
             case "SignatureException":
-                return JwtExceptionType.INVALID_JWT_SIGNATURE;
+                return AuthExceptionType.INVALID_JWT_SIGNATURE;
             case "MalformedJwtException":
-                return JwtExceptionType.INVALID_JWT_TOKEN;
+                return AuthExceptionType.INVALID_JWT_TOKEN;
             case "UnsupportedJwtException":
-                return JwtExceptionType.UNSUPPORTED_JWT_TOKEN;
+                return AuthExceptionType.UNSUPPORTED_JWT_TOKEN;
             default:
-                return JwtExceptionType.FAILURE_AUTHENTICATION;
+                return AuthExceptionType.FAILURE_AUTHENTICATION;
         }
     }
 

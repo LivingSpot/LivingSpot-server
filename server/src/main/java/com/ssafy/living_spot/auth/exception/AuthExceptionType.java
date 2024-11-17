@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum JwtExceptionType {
+public enum AuthExceptionType {
     /*
     Token 관련 Exception
      */
@@ -20,7 +20,12 @@ public enum JwtExceptionType {
      */
     FAILURE_AUTHENTICATION("자격 증명에 실패하였습니다."),
 
-    INVALID_EMAIL_OR_PASSWORD("이메일 또는 비밀번호가 일치하지 않습니다.");
+    INVALID_EMAIL_OR_PASSWORD("이메일 또는 비밀번호가 일치하지 않습니다."),
+
+    /*
+    Oauth2 관련 Exception
+     */
+    FAILURE_OAUTH2_AUTHENTICATION("OAuth2 로그인에 실패하였습니다.");
 
     private final String message;
 }
