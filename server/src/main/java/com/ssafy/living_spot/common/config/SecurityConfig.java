@@ -1,9 +1,9 @@
 package com.ssafy.living_spot.common.config;
 
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
-import com.ssafy.living_spot.auth.jwt.exception.CustomAuthenticationEntryPoint;
-import com.ssafy.living_spot.auth.jwt.filter.CustomLoginFilter;
-import com.ssafy.living_spot.auth.jwt.filter.JwtAuthenticationFilter;
+import com.ssafy.living_spot.auth.exception.CustomAuthenticationEntryPoint;
+import com.ssafy.living_spot.auth.filter.CustomLoginFilter;
+import com.ssafy.living_spot.auth.filter.JwtAuthenticationFilter;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

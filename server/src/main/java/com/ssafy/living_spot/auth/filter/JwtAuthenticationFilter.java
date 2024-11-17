@@ -1,4 +1,4 @@
-package com.ssafy.living_spot.auth.jwt.filter;
+package com.ssafy.living_spot.auth.filter;
 
 import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.AUTHORIZATION_HEADER;
 import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.BEARER_PREFIX;
@@ -8,7 +8,7 @@ import com.ssafy.living_spot.auth.jwt.component.JwtTokenValidator;
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
 import com.ssafy.living_spot.auth.jwt.dto.MemberTokenInfo;
 import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
-import com.ssafy.living_spot.auth.jwt.exception.CustomAuthenticationEntryPoint;
+import com.ssafy.living_spot.auth.exception.CustomAuthenticationEntryPoint;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

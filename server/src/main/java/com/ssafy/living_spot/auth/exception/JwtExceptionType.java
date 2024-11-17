@@ -1,4 +1,4 @@
-package com.ssafy.living_spot.auth.jwt.exception;
+package com.ssafy.living_spot.auth.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

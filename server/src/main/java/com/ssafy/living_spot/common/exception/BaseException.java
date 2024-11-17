@@ -1,6 +1,6 @@
 package com.ssafy.living_spot.common.exception;
 
-import com.ssafy.living_spot.auth.jwt.exception.JwtExceptionType;
+import com.ssafy.living_spot.auth.exception.JwtExceptionType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
