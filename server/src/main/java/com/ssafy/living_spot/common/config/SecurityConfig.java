@@ -1,14 +1,18 @@
 package com.ssafy.living_spot.common.config;
 
+import com.ssafy.living_spot.auth.exception.CustomAuthenticationEntryPoint;
+import com.ssafy.living_spot.auth.filter.CustomLoginFilter;
+import com.ssafy.living_spot.auth.filter.JwtAuthenticationFilter;
+import com.ssafy.living_spot.auth.filter.OAuth2AuthenticationFailureHandler;
+import com.ssafy.living_spot.auth.filter.OAuth2AuthenticationSuccessHandler;
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
-import com.ssafy.living_spot.auth.jwt.exception.CustomAuthenticationEntryPoint;
-import com.ssafy.living_spot.auth.jwt.filter.CustomLoginFilter;
-import com.ssafy.living_spot.auth.jwt.filter.JwtAuthenticationFilter;
+import com.ssafy.living_spot.auth.service.PrincipalOauth2UserService;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -40,10 +44,16 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/**"
     };
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final JwtUtil jwtUtil;
+    /**
+     * Oauth2
+     */
+    private final PrincipalOauth2UserService principalOauth2UserService;
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -58,6 +68,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
+
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -71,6 +83,12 @@ public class SecurityConfig {
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )
+                .oauth2Login((oauth2) -> oauth2
+                        .successHandler(oAuth2AuthenticationSuccessHandler())
+                        .failureHandler(oAuth2AuthenticationFailureHandler())
+                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
+                                .userService(principalOauth2UserService)))
+
                 .addFilterAt(new CustomLoginFilter(
                                 authenticationManager(authenticationConfiguration),
                                 jwtUtil,
@@ -89,13 +107,30 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:5173"
+        ));
+
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST","PATCH", "PUT", "DELETE", "OPTIONS"));
+
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+
+        configuration.setMaxAge(3600L);
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
+        return new OAuth2AuthenticationSuccessHandler(jwtUtil);
+    }
+
+    @Bean
+    public OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler() {
+        return new OAuth2AuthenticationFailureHandler();
     }
 }

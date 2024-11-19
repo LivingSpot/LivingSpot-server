@@ -1,4 +1,4 @@
-package com.ssafy.living_spot.auth.jwt.dto;
+package com.ssafy.living_spot.auth.dto;
 
 public record MemberTokenInfo(
         Long id,

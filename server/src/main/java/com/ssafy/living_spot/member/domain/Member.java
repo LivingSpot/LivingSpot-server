@@ -1,6 +1,7 @@
 package com.ssafy.living_spot.member.domain;
 
 import com.ssafy.living_spot.common.auditing.BaseTimeEntity;
+import com.ssafy.living_spot.member.domain.oauth.AuthProvider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,17 +10,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.Collection;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,15 +23,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @Table(name = "member")
 @EqualsAndHashCode(of = "id", callSuper = false)
-public class Member extends BaseTimeEntity implements UserDetails {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-
-    private String nickname;
 
     private String email;
 
@@ -53,47 +47,10 @@ public class Member extends BaseTimeEntity implements UserDetails {
     }
 
     @Builder
-    public Member(String name, String nickname, String email, String password, Role role) {
+    public Member(String name, String email, String password, Role role) {
         this.name = name;
-        this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.role = role;
-    }
-
-    // UserDetails 메서드 구현
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.role.name()));
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

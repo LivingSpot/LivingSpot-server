@@ -57,6 +57,17 @@ dependencies {
 	//* Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	//* Oauth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	//* Openfeign
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.2"
+	}
 }
 
 tasks.named('test') {

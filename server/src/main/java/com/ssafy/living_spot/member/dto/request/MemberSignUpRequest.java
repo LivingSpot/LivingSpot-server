@@ -8,9 +8,6 @@ public record MemberSignUpRequest(
         @NotBlank(message = "이름 입력은 필수입니다.")
         @Size(min = 2, max = 10, message = "이름은 2~10자리여야 합니다.")
         String name,
-        @NotBlank(message = "닉네임 입력은 필수입니다.")
-        @Size(min = 2, max = 10, message = "닉네임은 2~10자리여야 합니다.")
-        String nickname,
 
         @NotBlank(message = "이메일 입력은 필수입니다.")
         @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
