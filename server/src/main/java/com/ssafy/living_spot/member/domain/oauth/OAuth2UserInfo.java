@@ -15,15 +15,11 @@ public abstract class OAuth2UserInfo {
 
     public abstract String getProviderId();
 
-    public abstract String getProvider();
+    public abstract AuthProvider getProvider();
 
     public abstract String getEmail();
+
     public abstract String getName();
 
     public abstract String getProfileImageUrl();
-
-    @SuppressWarnings("unchecked")
-    public Map<String, Object> getResponse() {
-        return (Map<String, Object>) attributes.get("response");
-    }
 }

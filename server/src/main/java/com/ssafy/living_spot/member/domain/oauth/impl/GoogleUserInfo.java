@@ -1,5 +1,6 @@
 package com.ssafy.living_spot.member.domain.oauth.impl;
 
+import com.ssafy.living_spot.member.domain.oauth.AuthProvider;
 import com.ssafy.living_spot.member.domain.oauth.OAuth2UserInfo;
 import java.util.Map;
 
@@ -8,14 +9,18 @@ public class GoogleUserInfo extends OAuth2UserInfo {
         super(attributes);
     }
 
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
     @Override
     public String getProviderId() {
         return (String) attributes.get("sub");
     }
 
     @Override
-    public String getProvider() {
-        return "google";
+    public AuthProvider getProvider() {
+        return AuthProvider.GOOGLE;
     }
 
     @Override

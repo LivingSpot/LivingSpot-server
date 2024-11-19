@@ -7,9 +7,9 @@ import static com.ssafy.living_spot.common.exception.ErrorMessage.INVALID_REQUES
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.living_spot.auth.exception.CustomAuthenticationEntryPoint;
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
-import com.ssafy.living_spot.auth.jwt.dto.MemberTokenInfo;
-import com.ssafy.living_spot.auth.jwt.dto.request.LoginRequest;
-import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
+import com.ssafy.living_spot.auth.dto.MemberTokenInfo;
+import com.ssafy.living_spot.auth.dto.request.GeneralLoginRequest;
+import com.ssafy.living_spot.auth.dto.response.JwtToken;
 import com.ssafy.living_spot.common.exception.BadRequestException;
 import com.ssafy.living_spot.member.domain.Member;
 import com.ssafy.living_spot.member.domain.PrincipalDetail;
@@ -50,22 +50,22 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse response
     ) throws AuthenticationException {
 
-        LoginRequest loginRequest;
+        GeneralLoginRequest generalLoginRequest;
         try {
-            loginRequest = objectMapper.readValue(
+            generalLoginRequest = objectMapper.readValue(
                     request.getInputStream(),
-                    LoginRequest.class
+                    GeneralLoginRequest.class
             );
         } catch (IOException e) {
             throw new BadRequestException(INVALID_REQUEST_FORMAT);
         }
 
-        log.info("Attempting authentication for user: {}", loginRequest.email());
+        log.info("Attempting authentication for user: {}", generalLoginRequest.email());
 
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.email(),
-                        loginRequest.password()
+                        generalLoginRequest.email(),
+                        generalLoginRequest.password()
                 )
         );
     }

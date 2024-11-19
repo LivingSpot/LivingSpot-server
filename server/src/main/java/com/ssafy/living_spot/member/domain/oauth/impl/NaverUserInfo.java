@@ -1,12 +1,13 @@
 package com.ssafy.living_spot.member.domain.oauth.impl;
 
+import com.ssafy.living_spot.member.domain.oauth.AuthProvider;
 import com.ssafy.living_spot.member.domain.oauth.OAuth2UserInfo;
 import java.util.Map;
-import java.util.Optional;
 
 public class NaverUserInfo extends OAuth2UserInfo {
     public NaverUserInfo(Map<String, Object> attributes) {
         super(attributes);
+        this.attributes = (Map<String, Object>) attributes.get("response");
     }
 
     @Override
@@ -16,34 +17,26 @@ public class NaverUserInfo extends OAuth2UserInfo {
 
     @Override
     public String getProviderId() {
-        return Optional.ofNullable(getResponse())
-                .map(response -> (String) response.get("id"))
-                .orElse(null);
+        return attributes.get("id").toString();
     }
 
     @Override
-    public String getProvider() {
-        return "naver";
-    }
-
-    @Override
-    public String getEmail() {
-        return Optional.ofNullable(getResponse())
-                .map(response -> (String) response.get("email"))
-                .orElse(null);
+    public AuthProvider getProvider() {
+        return AuthProvider.NAVER;
     }
 
     @Override
     public String getName() {
-        return Optional.ofNullable(getResponse())
-                .map(response -> (String) response.get("nickname"))
-                .orElse(null);
+        return attributes.get("name").toString();
+    }
+
+    @Override
+    public String getEmail() {
+        return attributes.get("email").toString();
     }
 
     @Override
     public String getProfileImageUrl() {
-        return Optional.ofNullable(getResponse())
-                .map(response -> (String) response.get("profile_image"))
-                .orElse(null);
+        return attributes.get("profile_image").toString();
     }
 }

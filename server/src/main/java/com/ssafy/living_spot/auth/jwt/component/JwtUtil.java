@@ -3,8 +3,8 @@ package com.ssafy.living_spot.auth.jwt.component;
 import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
 import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.REFRESH_TOKEN_PREFIX;
 
-import com.ssafy.living_spot.auth.jwt.dto.MemberTokenInfo;
-import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
+import com.ssafy.living_spot.auth.dto.MemberTokenInfo;
+import com.ssafy.living_spot.auth.dto.response.JwtToken;
 import com.ssafy.living_spot.common.util.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

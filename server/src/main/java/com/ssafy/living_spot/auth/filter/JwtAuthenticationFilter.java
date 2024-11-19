@@ -6,8 +6,8 @@ import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.REFRESH_TOKE
 
 import com.ssafy.living_spot.auth.jwt.component.JwtTokenValidator;
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
-import com.ssafy.living_spot.auth.jwt.dto.MemberTokenInfo;
-import com.ssafy.living_spot.auth.jwt.dto.response.JwtToken;
+import com.ssafy.living_spot.auth.dto.MemberTokenInfo;
+import com.ssafy.living_spot.auth.dto.response.JwtToken;
 import com.ssafy.living_spot.auth.exception.CustomAuthenticationEntryPoint;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
