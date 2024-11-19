@@ -1,6 +1,5 @@
 package com.ssafy.living_spot.auth.controller;
 
-import com.ssafy.living_spot.auth.dto.request.AuthCodeRequest;
 import com.ssafy.living_spot.auth.dto.request.GeneralLoginRequest;
 import com.ssafy.living_spot.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,19 +30,5 @@ public class AuthApi implements AuthSwaggerApi {
     ) {
         authService.loginWithCredentials(generalLoginRequest, response);
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @Override
-    @PostMapping("/{provider}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Void> oauthCallback(
-            @PathVariable(value = "provider") String provider,
-            @RequestBody AuthCodeRequest authCodeRequest
-    ) {
-        log.info("provider: {}", provider);
-        log.info(authCodeRequest.authorizationCode());
-        authService.loginWithOauth(provider, authCodeRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
-
     }
 }
