@@ -1,5 +1,7 @@
 package com.ssafy.living_spot.common.config;
 
+import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.AUTHORIZATION_HEADER;
+
 import com.ssafy.living_spot.auth.exception.CustomAuthenticationEntryPoint;
 import com.ssafy.living_spot.auth.filter.CustomLoginFilter;
 import com.ssafy.living_spot.auth.filter.JwtAuthenticationFilter;
@@ -115,6 +117,8 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST","PATCH", "PUT", "DELETE", "OPTIONS"));
 
         configuration.setAllowedHeaders(Arrays.asList("*"));
+
+        configuration.addExposedHeader(AUTHORIZATION_HEADER);
 
         configuration.setMaxAge(3600L);
         configuration.setAllowCredentials(true);

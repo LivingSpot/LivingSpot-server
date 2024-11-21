@@ -1,5 +1,8 @@
 package com.ssafy.living_spot.auth.service;
 
+import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.AUTHORIZATION_HEADER;
+import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.BEARER_PREFIX;
+
 import com.ssafy.living_spot.auth.dto.request.GeneralLoginRequest;
 import com.ssafy.living_spot.auth.exception.AuthExceptionType;
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
@@ -58,6 +61,7 @@ public class AuthService {
 
         ResponseCookie deletedAccessTokenCookie = jwtUtil.deleteAccessTokenCookie();
         response.addHeader("set-cookie", deletedAccessTokenCookie.toString());
-
+        System.out.println(accessToken);
+        response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + accessToken);
     }
 }
