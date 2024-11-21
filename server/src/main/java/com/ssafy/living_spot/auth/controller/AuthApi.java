@@ -2,6 +2,7 @@ package com.ssafy.living_spot.auth.controller;
 
 import com.ssafy.living_spot.auth.dto.request.GeneralLoginRequest;
 import com.ssafy.living_spot.auth.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,14 @@ public class AuthApi implements AuthSwaggerApi {
             HttpServletResponse response
     ) {
         authService.loginWithCredentials(generalLoginRequest, response);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @Override
+    @PostMapping("/oauth2-jwt-header")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> extractOAuth2AccessTokenFromCookie(HttpServletRequest request, HttpServletResponse response) {
+        authService.extractOAuth2AccessTokenFromCookie(request, response);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

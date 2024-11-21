@@ -11,6 +11,7 @@ import com.ssafy.living_spot.auth.dto.MemberTokenInfo;
 import com.ssafy.living_spot.auth.dto.request.GeneralLoginRequest;
 import com.ssafy.living_spot.auth.dto.response.JwtToken;
 import com.ssafy.living_spot.common.exception.BadRequestException;
+import com.ssafy.living_spot.common.util.CookieUtil;
 import com.ssafy.living_spot.member.domain.Member;
 import com.ssafy.living_spot.member.domain.PrincipalDetail;
 import jakarta.servlet.FilterChain;
@@ -83,7 +84,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         MemberTokenInfo memberTokenInfo = new MemberTokenInfo(member.getId(), member.getRole().toString());
         JwtToken jwtToken = jwtUtil.generateTokens(memberTokenInfo);
 
-        ResponseCookie refreshTokenCookie = jwtUtil.createRefreshTokenCookie(jwtToken.refreshToken());
+        ResponseCookie refreshTokenCookie = CookieUtil.createRefreshTokenCookie(jwtToken.refreshToken());
         log.info("refreshTokenCookie: {}", refreshTokenCookie);
         response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + jwtToken.accessToken());
         response.addHeader("set-cookie", refreshTokenCookie.toString());
@@ -96,7 +97,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse response,
             AuthenticationException failed
     ) throws IOException {
-        ResponseCookie deletedRefreshTokenCookie = jwtUtil.deleteRefreshTokenCookie();
+        ResponseCookie deletedRefreshTokenCookie = CookieUtil.deleteRefreshTokenCookie();
         response.addHeader("set-cookie", deletedRefreshTokenCookie.toString());
 
         customAuthenticationEntryPoint.commence(request, response, failed);

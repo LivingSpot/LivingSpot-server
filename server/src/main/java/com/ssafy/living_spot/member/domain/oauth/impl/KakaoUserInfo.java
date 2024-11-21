@@ -26,7 +26,6 @@ public class KakaoUserInfo extends OAuth2UserInfo {
 
     @Override
     public AuthProvider getProvider() {
-        // OAuth2 제공자 이름 반환
         return AuthProvider.KAKAO;
     }
 

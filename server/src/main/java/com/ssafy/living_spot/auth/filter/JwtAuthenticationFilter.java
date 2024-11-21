@@ -9,6 +9,7 @@ import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
 import com.ssafy.living_spot.auth.dto.MemberTokenInfo;
 import com.ssafy.living_spot.auth.dto.response.JwtToken;
 import com.ssafy.living_spot.auth.exception.CustomAuthenticationEntryPoint;
+import com.ssafy.living_spot.common.util.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -68,7 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (AuthenticationException e) {
             customAuthenticationEntryPoint.commence(request, response, e);
             SecurityContextHolder.clearContext();
-            response.addHeader("set-Cookie", jwtUtil.deleteRefreshTokenCookie().toString());
+            response.addHeader("set-Cookie", CookieUtil.deleteRefreshTokenCookie().toString());
         }
 
         filterChain.doFilter(request, response);
@@ -87,7 +88,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void processValidAccessToken(String accessToken) {
-        Long memberId = Long.parseLong(jwtUtil.getMemberId(accessToken));
+        Long memberId = jwtUtil.getMemberId(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -103,6 +104,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
+        log.info("Processing request in JWT Filter: " + request.getRequestURI());
         Optional<Cookie> refreshTokenCookie = extractRefreshTokenFromCookie(request);
 
         if (refreshTokenCookie.isPresent()) {
@@ -112,8 +114,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Refresh Token이 만료되지 않았는지 확인
             if (!jwtUtil.isExpired(refreshToken)) {
-                String memberIdStr = jwtUtil.getMemberId(refreshToken);
-                Long memberId = Long.parseLong(memberIdStr);
+                Long memberId = jwtUtil.getMemberId(refreshToken);
 
                 // Redis에 저장된 Refresh Token과 일치하는지 확인
                 if (jwtUtil.validateRefreshToken(memberId, refreshToken)) {
@@ -127,7 +128,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     // 새로운 토큰을 응답 헤더에 설정
                     response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + newTokens.accessToken());
-                    ResponseCookie newRefreshTokenCookie = jwtUtil.createRefreshTokenCookie(newTokens.refreshToken());
+                    ResponseCookie newRefreshTokenCookie = CookieUtil.createRefreshTokenCookie(newTokens.refreshToken());
                     response.addHeader("set-cookie", newRefreshTokenCookie.toString());
 
                     // SecurityContext 설정
@@ -141,12 +142,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 } else {
                     // Refresh Token이 유효하지 않은 경우
                     SecurityContextHolder.clearContext();
-                    response.addHeader("set-cookie", jwtUtil.deleteRefreshTokenCookie().toString());
+                    response.addHeader("set-cookie", CookieUtil.deleteRefreshTokenCookie().toString());
                 }
             } else {
                 // Refresh Token이 만료된 경우
                 SecurityContextHolder.clearContext();
-                response.addHeader("set-cookie", jwtUtil.deleteRefreshTokenCookie().toString());
+                response.addHeader("set-cookie", CookieUtil.deleteRefreshTokenCookie().toString());
             }
         }
     }

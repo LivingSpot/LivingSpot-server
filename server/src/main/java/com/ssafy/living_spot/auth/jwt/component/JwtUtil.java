@@ -1,6 +1,5 @@
 package com.ssafy.living_spot.auth.jwt.component;
 
-import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
 import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.REFRESH_TOKEN_PREFIX;
 
 import com.ssafy.living_spot.auth.dto.MemberTokenInfo;
@@ -10,7 +9,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -50,32 +48,12 @@ public class JwtUtil {
                 .compact();
     }
 
-    public ResponseCookie createRefreshTokenCookie(String refreshToken) {
-        return ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(jwtProperties.getRefreshTokenExpiration() / 1000)
-                .sameSite("Strict")
-                .build();
-    }
-
-    public ResponseCookie deleteRefreshTokenCookie() {
-        return ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, "")
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(0)
-                .sameSite("Strict")
-                .build();
-    }
-
     /**
      * JWT 관련 Method
      */
 
-    public String getMemberId(String token) {
-        return getClaims(token).get("id", String.class);
+    public Long getMemberId(String token) {
+        return getClaims(token).get("id", Long.class);
     }
 
     public String getRole(String token) {
