@@ -4,10 +4,9 @@ import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.AUTHORIZATIO
 import static com.ssafy.living_spot.auth.jwt.component.JwtConstants.BEARER_PREFIX;
 
 import com.ssafy.living_spot.auth.dto.request.GeneralLoginRequest;
-import com.ssafy.living_spot.auth.exception.AuthExceptionType;
-import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
 import com.ssafy.living_spot.common.exception.BadRequestException;
 import com.ssafy.living_spot.common.exception.ErrorMessage;
+import com.ssafy.living_spot.common.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
     private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
 
     public void loginWithCredentials(
             GeneralLoginRequest generalLoginRequest,
@@ -44,22 +42,22 @@ public class AuthService {
         Cookie[] cookies = request.getCookies();
         String accessToken = null;
 
-        if(cookies == null){
+        if (cookies == null) {
             throw new BadRequestException(ErrorMessage.EMPTY_COOKIE);
         }
 
         for (Cookie cookie : cookies) {
-            if(cookie.getName().equals("access_token")){
+            if (cookie.getName().equals("access_token")) {
                 accessToken = cookie.getValue();
                 break;
             }
         }
 
-        if(accessToken == null){
+        if (accessToken == null) {
             throw new BadRequestException(ErrorMessage.INVALID_ACCESS_TOKEN);
         }
 
-        ResponseCookie deletedAccessTokenCookie = jwtUtil.deleteAccessTokenCookie();
+        ResponseCookie deletedAccessTokenCookie = CookieUtil.deleteAccessTokenCookie();
         response.addHeader("set-cookie", deletedAccessTokenCookie.toString());
         System.out.println(accessToken);
         response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + accessToken);

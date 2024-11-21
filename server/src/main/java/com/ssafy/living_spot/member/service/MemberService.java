@@ -4,10 +4,10 @@ import static com.ssafy.living_spot.common.exception.ErrorMessage.ALREADY_EXIST_
 import static com.ssafy.living_spot.member.domain.Role.ROLE_USER;
 
 import com.ssafy.living_spot.auth.jwt.component.JwtConstants;
-import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
 import com.ssafy.living_spot.common.exception.BadRequestException;
 import com.ssafy.living_spot.common.exception.ErrorMessage;
 import com.ssafy.living_spot.common.exception.NotFoundException;
+import com.ssafy.living_spot.common.util.CookieUtil;
 import com.ssafy.living_spot.common.util.RedisUtil;
 import com.ssafy.living_spot.member.domain.Member;
 import com.ssafy.living_spot.member.dto.request.MemberIdParam;
@@ -29,7 +29,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
 
     @Transactional
@@ -84,7 +83,7 @@ public class MemberService {
 
     public void logout(HttpServletResponse response, Long memberId) {
         redisUtil.delete(JwtConstants.REFRESH_TOKEN_PREFIX + memberId);
-        ResponseCookie responseCookie = jwtUtil.deleteRefreshTokenCookie();
+        ResponseCookie responseCookie = CookieUtil.deleteRefreshTokenCookie();
         response.addHeader("set-cookie", responseCookie.toString());
     }
 }

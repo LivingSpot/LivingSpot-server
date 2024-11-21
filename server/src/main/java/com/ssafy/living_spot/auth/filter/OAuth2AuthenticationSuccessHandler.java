@@ -3,6 +3,7 @@ package com.ssafy.living_spot.auth.filter;
 import com.ssafy.living_spot.auth.dto.MemberTokenInfo;
 import com.ssafy.living_spot.auth.dto.response.JwtToken;
 import com.ssafy.living_spot.auth.jwt.component.JwtUtil;
+import com.ssafy.living_spot.common.util.CookieUtil;
 import com.ssafy.living_spot.member.domain.Member;
 import com.ssafy.living_spot.member.domain.PrincipalDetail;
 import jakarta.servlet.ServletException;
@@ -37,8 +38,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         log.info(jwtToken.accessToken());
         log.info(jwtToken.refreshToken());
 
-        ResponseCookie accessTokenCookie = jwtUtil.createAccessTokenCookie(jwtToken.accessToken());
-        ResponseCookie refreshTokenCookie = jwtUtil.createRefreshTokenCookie(jwtToken.refreshToken());
+        ResponseCookie accessTokenCookie = CookieUtil.createAccessTokenCookie(jwtToken.accessToken());
+        ResponseCookie refreshTokenCookie = CookieUtil.createRefreshTokenCookie(jwtToken.refreshToken());
         response.addHeader("set-cookie", accessTokenCookie.toString());
         response.addHeader("set-cookie", refreshTokenCookie.toString());
         log.info("OAuth2 로그인 성공: {}", member.getEmail());
