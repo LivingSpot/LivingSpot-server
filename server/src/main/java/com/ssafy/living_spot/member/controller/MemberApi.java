@@ -1,9 +1,11 @@
 package com.ssafy.living_spot.member.controller;
 
+import com.ssafy.living_spot.common.util.RedisUtil;
 import com.ssafy.living_spot.common.util.SecurityUtil;
 import com.ssafy.living_spot.member.dto.request.MemberSignUpRequest;
 import com.ssafy.living_spot.member.dto.response.MemberProfileResponse;
 import com.ssafy.living_spot.member.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberApi implements MemberSwaggerApi {
 
     private final MemberService memberService;
+    private final RedisUtil redisUtil;
 
     @Override
     @PostMapping("/signup")
@@ -38,4 +41,12 @@ public class MemberApi implements MemberSwaggerApi {
         return ResponseEntity.ok(memberService.getMemberProfile(memberId));
     }
 
+    @Override
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        memberService.logout(response, memberId);
+        return ResponseEntity.ok().build();
+    }
 }
