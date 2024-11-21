@@ -4,9 +4,12 @@ import static com.ssafy.living_spot.common.exception.ErrorMessage.ALREADY_EXIST_
 import static com.ssafy.living_spot.member.domain.Role.ROLE_USER;
 
 import com.ssafy.living_spot.common.exception.BadRequestException;
+import com.ssafy.living_spot.common.exception.ErrorMessage;
+import com.ssafy.living_spot.common.exception.NotFoundException;
 import com.ssafy.living_spot.member.domain.Member;
 import com.ssafy.living_spot.member.dto.request.MemberIdParam;
 import com.ssafy.living_spot.member.dto.request.MemberSignUpRequest;
+import com.ssafy.living_spot.member.dto.response.MemberProfileResponse;
 import com.ssafy.living_spot.member.repository.jpa.MemberRepository;
 import com.ssafy.living_spot.member.repository.mybatis.MemberMapper;
 import java.util.Optional;
@@ -35,9 +38,22 @@ public class MemberService {
                 .email(memberSignUpRequest.email())
                 .password(bCryptPasswordEncoder.encode(memberSignUpRequest.password()))
                 .role(ROLE_USER)
+                .profileImageUrl(null)
                 .build();
 
         return memberRepository.save(member).getId();
+    }
+
+    public MemberProfileResponse getMemberProfile(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_EXIST_MEMBER));
+
+        return new MemberProfileResponse(
+                member.getEmail(),
+                member.getName(),
+                member.getRole(),
+                member.getProfileImageUrl()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -52,5 +68,10 @@ public class MemberService {
 
     public Optional<Member> findMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
+    }
+
+    public Member getMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_EXIST_MEMBER));
     }
 }

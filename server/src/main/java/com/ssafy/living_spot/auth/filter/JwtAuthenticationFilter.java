@@ -87,7 +87,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void processValidAccessToken(String accessToken) {
-        Long memberId = Long.parseLong(jwtUtil.getMemberId(accessToken));
+        Long memberId = jwtUtil.getMemberId(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -103,6 +103,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
+        log.info("Processing request in JWT Filter: " + request.getRequestURI());
         Optional<Cookie> refreshTokenCookie = extractRefreshTokenFromCookie(request);
 
         if (refreshTokenCookie.isPresent()) {
@@ -112,8 +113,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Refresh Token이 만료되지 않았는지 확인
             if (!jwtUtil.isExpired(refreshToken)) {
-                String memberIdStr = jwtUtil.getMemberId(refreshToken);
-                Long memberId = Long.parseLong(memberIdStr);
+                Long memberId = jwtUtil.getMemberId(refreshToken);
 
                 // Redis에 저장된 Refresh Token과 일치하는지 확인
                 if (jwtUtil.validateRefreshToken(memberId, refreshToken)) {

@@ -40,6 +40,7 @@ public class Member extends BaseTimeEntity {
     private AuthProvider authProvider = AuthProvider.LOCAL;
 
     private String providerId;
+    private String profileImageUrl;
 
     public void updateAuthProvider(AuthProvider authProvider, String providerId) {
         this.authProvider = authProvider;
@@ -47,10 +48,11 @@ public class Member extends BaseTimeEntity {
     }
 
     @Builder
-    public Member(String name, String email, String password, Role role) {
+    public Member(String name, String email, String password, Role role, String profileImageUrl) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.profileImageUrl = profileImageUrl;
     }
 }

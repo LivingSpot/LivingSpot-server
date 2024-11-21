@@ -14,6 +14,9 @@ public enum ErrorMessage {
     EMPTY_COOKIE("쿠키가 비어있습니다."),
     INVALID_ACCESS_TOKEN("유효하지 않는 Access Token입니다."),
 
-    INVALID_REFRESH_TOKEN("유효하지 않는 Refresh Token입니다.");
+    INVALID_REFRESH_TOKEN("유효하지 않는 Refresh Token입니다."),
+    INVALID_PRINCIPAL_TYPE("유효하지 않는 Principal Type입니다."),
+    NOT_EXIST_MEMBER("존재하지 않는 회원입니다."),
+    NOT_AUTHORIZED_MEMBER("권한이 없는 회원입니다.");
     private final String message;
 }

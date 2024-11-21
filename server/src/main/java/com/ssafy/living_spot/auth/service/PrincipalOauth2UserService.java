@@ -39,12 +39,14 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         Optional<Member> optionalMember = memberRepository.findByEmail(oAuth2UserInfo.getEmail());
         Member member = optionalMember.orElse(null);
+
         if (member == null) {
             member = Member.builder()
                     .name(oAuth2UserInfo.getName())
                     .email(oAuth2UserInfo.getEmail())
                     .password("oauth2")
                     .role(Role.ROLE_USER)
+                    .profileImageUrl(oAuth2UserInfo.getProfileImageUrl())
                     .build();
             member.updateAuthProvider(oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId());
             memberRepository.save(member);

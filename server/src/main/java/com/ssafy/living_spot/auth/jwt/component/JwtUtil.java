@@ -97,8 +97,8 @@ public class JwtUtil {
      * JWT 관련 Method
      */
 
-    public String getMemberId(String token) {
-        return getClaims(token).get("id", String.class);
+    public Long getMemberId(String token) {
+        return getClaims(token).get("id", Long.class);
     }
 
     public String getRole(String token) {

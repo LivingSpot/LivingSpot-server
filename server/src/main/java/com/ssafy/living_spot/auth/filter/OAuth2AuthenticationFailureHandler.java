@@ -20,5 +20,6 @@ public class OAuth2AuthenticationFailureHandler implements AuthenticationFailure
     ) throws IOException {
         log.error("OAuth2 로그인 실패: {}", exception.getMessage());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, FAILURE_OAUTH2_AUTHENTICATION.getMessage());
+        response.sendRedirect("http://localhost:5173/login");
     }
 }
