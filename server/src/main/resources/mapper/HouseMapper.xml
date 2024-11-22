@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.living_spot.house.repository.mybatis.HouseMapper">
+
+<!--    &lt;!&ndash; HouseInfoDto에 대한 resultMap 정의 &ndash;&gt;-->
+    <resultMap id="HouseInfoResultMap" type="com.ssafy.living_spot.house.dto.HouseInfoDto">
+        <result property="aptSeq" column="apt_seq"/>
+        <result property="sggCd" column="sgg_cd"/>
+        <result property="umdCd" column="umd_cd"/>
+        <result property="umdNm" column="umd_nm"/>
+        <result property="jibun" column="jibun"/>
+        <result property="roadNmSggCd" column="road_nm_sgg_cd"/>
+        <result property="roadNm" column="road_nm"/>
+        <result property="roadNmBonbun" column="road_nm_bonbun"/>
+        <result property="roadNmBubun" column="road_nm_bubun"/>
+        <result property="aptNm" column="apt_nm"/>
+        <result property="buildYear" column="build_year"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+    </resultMap>
+
+    <resultMap id="HouseDealResultMap" type="com.ssafy.living_spot.house.dto.HouseDealDto">
+        <result property="no" column="no"/>
+        <result property="aptSeq" column="apt_seq"/>
+        <result property="aptDong" column="apt_dong"/>
+        <result property="floor" column="floor"/>
+        <result property="dealYear" column="deal_year"/>
+        <result property="dealMonth" column="deal_month"/>
+        <result property="dealDay" column="deal_day"/>
+        <result property="excluUseAr" column="exclu_use_ar"/>
+        <result property="dealAmount" column="deal_amount"/>
+
+        <!-- houseInfo를 포함하되, select 호출 없이 단순히 매핑 -->
+        <association property="houseInfo" javaType="com.ssafy.living_spot.house.dto.HouseInfoDto">
+            <result property="aptSeq" column="i_apt_seq"/>
+            <result property="sggCd" column="sgg_cd"/>
+            <result property="umdCd" column="umd_cd"/>
+            <result property="umdNm" column="umd_nm"/>
+            <result property="jibun" column="jibun"/>
+            <result property="roadNmSggCd" column="road_nm_sgg_cd"/>
+            <result property="roadNm" column="road_nm"/>
+            <result property="roadNmBonbun" column="road_nm_bonbun"/>
+            <result property="roadNmBubun" column="road_nm_bubun"/>
+            <result property="aptNm" column="apt_nm"/>
+            <result property="buildYear" column="build_year"/>
+            <result property="latitude" column="latitude"/>
+            <result property="longitude" column="longitude"/>
+        </association>
+    </resultMap>
+
+
+    <!--    <select id="getHouseInfoByAptSeq" resultMap="HouseInfoResultMap" parameterType="int">-->
+<!--        SELECT-->
+<!--        apt_seq, sgg_cd, umd_cd, umd_nm, jibun, road_nm_sgg_cd, road_nm,-->
+<!--        road_nm_bonbun, road_nm_bubun, apt_nm, build_year, latitude, longitude-->
+<!--        FROM-->
+<!--        houseinfos-->
+<!--        WHERE-->
+<!--        apt_seq = #{aptSeq}-->
+<!--    </select>-->
+
+    <!-- 모든 HouseDeal을 조회하는 쿼리 -->
+    <select id="searchAll" resultMap="HouseDealResultMap">
+        SELECT
+            d.no, d.apt_seq, d.apt_dong, d.floor, d.deal_year, d.deal_month, d.deal_day, d.exclu_use_ar, d.deal_amount,
+            i.apt_seq AS i_apt_seq, i.sgg_cd, i.umd_cd, i.umd_nm, i.jibun, i.road_nm_sgg_cd, i.road_nm,
+            i.road_nm_bonbun, i.road_nm_bubun, i.apt_nm, i.build_year, i.latitude, i.longitude
+        FROM
+            housedeals d
+                LEFT JOIN
+            houseinfos i ON d.apt_seq = i.apt_seq
+        LIMIT 0,5
+    </select>
+
+    <select id="searchDetail" resultMap="HouseDealResultMap">
+        SELECT
+        d.no, d.apt_seq, d.apt_dong, d.floor, d.deal_year, d.deal_month, d.deal_day, d.exclu_use_ar, d.deal_amount,
+        i.apt_seq AS i_apt_seq, i.sgg_cd, i.umd_cd, i.umd_nm, i.jibun, i.road_nm_sgg_cd, i.road_nm,
+        i.road_nm_bonbun, i.road_nm_bubun, i.apt_nm, i.build_year, i.latitude, i.longitude
+        FROM
+        housedeals d
+        LEFT JOIN
+        houseinfos i ON d.apt_seq = i.apt_seq
+        <where>
+            <if test="dongName != null and dongName != ''">
+                AND i.sgg_cd = SUBSTRING(#{dongName}, 1, 5)
+                AND i.umd_cd = SUBSTRING(#{dongName}, 6)
+            </if>
+            <if test="aptName != null and aptName != ''">
+                AND i.apt_nm LIKE CONCAT('%', #{aptName}, '%')
+            </if>
+            <if test="dealYear != -1">
+                AND d.deal_year = #{dealYear}
+            </if>
+            <if test="dealMonth != -1">
+                AND d.deal_month = #{dealMonth}
+            </if>
+        </where>
+        ORDER BY d.deal_year DESC, d.deal_month DESC, d.deal_day DESC
+    </select>
+
+
+    <!-- 단일 HouseInfoDto를 조회하는 쿼리 (association을 위한 쿼리) -->
+    <select id="findByAptName" resultMap="HouseInfoResultMap" parameterType="String">
+        SELECT
+            apt_seq, sgg_cd, umd_cd, umd_nm, jibun, road_nm_sgg_cd, road_nm, road_nm_bonbun, road_nm_bubun,
+            apt_nm, build_year, latitude, longitude
+        FROM
+            houseinfos
+        WHERE
+            apt_nm LIKE CONCAT('%', #{aptName}, '%')
+    </select>
+
+</mapper>
