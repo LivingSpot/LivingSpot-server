@@ -9,8 +9,6 @@ import java.util.List;
 @Mapper
 public interface HouseMapper {
 
-    int testCount();
-
     List<HouseDealDto> searchAll();
 
     List<HouseDealDto> findByAptName(@Param("aptName") String aptName);

@@ -2,6 +2,7 @@ package com.ssafy.living_spot.house.controller;
 
 import com.ssafy.living_spot.house.dto.HouseDealDto;
 import com.ssafy.living_spot.house.service.HouseService;
+import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/house")
+@Slf4j
 //@MapperScan("com.ssafy.HappyHome.house.mapper") // Mapper 패키지 지정
 public class HouseController {
 
@@ -29,9 +31,9 @@ public class HouseController {
 
     @GetMapping("/searchAll")
     public ResponseEntity<List<HouseDealDto>> searchAll(){
-        List<HouseDealDto> list = houseService.searchAll();
+        List<HouseDealDto> searchedAllList = houseService.searchAll();
 
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+        return ResponseEntity.status(HttpStatus.OK).body(searchedAllList);
     }
 
     @GetMapping("/searchDetail")
@@ -40,28 +42,28 @@ public class HouseController {
                                                            @RequestParam(name="dealYear") Integer dealYear,
                                                            @RequestParam(name="dealMonth") Integer dealMonth
                                                            ){
-        System.out.println("상세검색 백엔드 API 호출 중!!!!");
-        List<HouseDealDto> list = houseService.searchDetail(dongName,aptName,dealYear,dealMonth);
+        log.info("상세검색 백엔드 API 호출 중!!!!");
+        List<HouseDealDto> searchedDetailList = houseService.searchDetail(dongName,aptName,dealYear,dealMonth);
 
-        return  ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.CONTENT_TYPE, "application/json") .body(list);
+        return  ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.CONTENT_TYPE, "application/json") .body(searchedDetailList);
     }
 
     @GetMapping("/searchByAptName")
     public ResponseEntity<List<HouseDealDto>> searchByAptName(@RequestParam(name = "aptName") String aptName) {
-        List<HouseDealDto> list = houseService.getListByAptName(aptName);
-        System.out.println(list);
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+        List<HouseDealDto> searchedByAptNameList = houseService.getListByAptName(aptName);
+
+        return ResponseEntity.status(HttpStatus.OK).body(searchedByAptNameList);
     }
 
     @GetMapping("/searchByDongName")
     public ResponseEntity<List<HouseDealDto>> searchByDongName(@RequestParam String dongName) {
-        List<HouseDealDto> list = houseService.getListByDongName(dongName);
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+        List<HouseDealDto> searchedByDongNameList = houseService.getListByDongName(dongName);
+        return ResponseEntity.status(HttpStatus.OK).body(searchedByDongNameList);
     }
 
     @GetMapping("/searchByDealDate")
     public ResponseEntity<List<HouseDealDto>> searchByDealDate(@RequestParam Integer dealYear, @RequestParam Integer dealMonth) {
-        List<HouseDealDto> list = houseService.getListByDealDate(dealYear, dealMonth);
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+        List<HouseDealDto> searchedByDealDateList = houseService.getListByDealDate(dealYear, dealMonth);
+        return ResponseEntity.status(HttpStatus.OK).body(searchedByDealDateList);
     }
 }
