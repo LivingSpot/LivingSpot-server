@@ -38,4 +38,9 @@ public class HouseServiceImpl implements HouseService {
     public List<HouseDealDto> getListByDealDate(Integer dealYear, Integer dealMonth) {
         return houseMapper.findByDealDate(dealYear, dealMonth);
     }
+
+    @Override
+    public List<HouseDealDto> searchDetail(String dongName, String aptName, Integer dealYear, Integer dealMonth) {
+        return houseMapper.searchDetail(dongName,aptName,dealYear,dealMonth);
+    }
 }

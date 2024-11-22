@@ -10,4 +10,5 @@ public interface HouseService {
     List<HouseDealDto> getListByAptName(String aptName);
     List<HouseDealDto> getListByDongName(String dongName);
     List<HouseDealDto> getListByDealDate(Integer dealYear, Integer dealMonth);
+    List<HouseDealDto> searchDetail(String dongName, String aptName, Integer dealYear, Integer dealMonth);
 }

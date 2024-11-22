@@ -19,4 +19,5 @@ public interface HouseMapper {
 
     List<HouseDealDto> findByDealDate(@Param("dealYear") Integer dealYear, @Param("dealMonth") Integer dealMonth);
 
+    List<HouseDealDto> searchDetail(@Param("dongName") String dongName,@Param("aptName") String aptNAme,@Param("dealYear") Integer dealYear, @Param("dealMonth") Integer dealMonth);
 }

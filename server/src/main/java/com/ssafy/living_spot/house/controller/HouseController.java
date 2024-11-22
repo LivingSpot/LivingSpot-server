@@ -4,6 +4,7 @@ import com.ssafy.living_spot.house.dto.HouseDealDto;
 import com.ssafy.living_spot.house.service.HouseService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,10 +28,22 @@ public class HouseController {
     }
 
     @GetMapping("/searchAll")
-    public ResponseEntity<HouseDealDto> getAll(){
+    public ResponseEntity<List<HouseDealDto>> searchAll(){
         List<HouseDealDto> list = houseService.searchAll();
 
-        return ResponseEntity.status(HttpStatus.OK).body((HouseDealDto) list);
+        return ResponseEntity.status(HttpStatus.OK).body(list);
+    }
+
+    @GetMapping("/searchDetail")
+    public ResponseEntity<List<HouseDealDto>> searchDetail(@RequestParam(name="dongName") String dongName,
+                                                           @RequestParam(name="aptName") String aptName,
+                                                           @RequestParam(name="dealYear") Integer dealYear,
+                                                           @RequestParam(name="dealMonth") Integer dealMonth
+                                                           ){
+        System.out.println("상세검색 백엔드 API 호출 중!!!!");
+        List<HouseDealDto> list = houseService.searchDetail(dongName,aptName,dealYear,dealMonth);
+
+        return  ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.CONTENT_TYPE, "application/json") .body(list);
     }
 
     @GetMapping("/searchByAptName")
