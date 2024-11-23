@@ -35,7 +35,9 @@ public class MemberApi implements MemberSwaggerApi {
         return ResponseEntity.ok(memberService.signUp(memberSignUpRequest));
     }
 
+    @Override
     @PostMapping("/upload-profile-image")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> uploadProfileImage(@RequestPart("file") MultipartFile file) {
         String imageUrl = memberService.uploadImage(file);
         return ResponseEntity.ok(Map.of("imageUrl", imageUrl));

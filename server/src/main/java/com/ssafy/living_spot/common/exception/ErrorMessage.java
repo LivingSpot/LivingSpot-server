@@ -19,7 +19,8 @@ public enum ErrorMessage {
     NOT_EXIST_MEMBER("존재하지 않는 회원입니다."),
     NOT_AUTHORIZED_MEMBER("권한이 없는 회원입니다."),
     WRONG_PASSWORD("비밀 번호가 일치하지 않습니다."),
-    FILE_UPLOAD_FAILED("파일 업로드에 실패했습니다.");
+    FILE_UPLOAD_FAILED("파일 업로드에 실패했습니다."),
+    NOT_EXIST_HOUSE("존재하지 않는 아파트 정보입니다.");
 
     private final String message;
 }

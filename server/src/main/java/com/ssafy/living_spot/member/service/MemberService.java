@@ -79,7 +79,7 @@ public class MemberService {
         }else{
             profileImageUrl = member.getProfileImageUrl();
         }
-        System.out.println("profileImageUrl = " + profileImageUrl);
+
         return new MemberProfileResponse(
                 member.getEmail(),
                 member.getName(),

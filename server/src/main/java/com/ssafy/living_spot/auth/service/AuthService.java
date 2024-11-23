@@ -59,7 +59,6 @@ public class AuthService {
 
         ResponseCookie deletedAccessTokenCookie = CookieUtil.deleteAccessTokenCookie();
         response.addHeader("set-cookie", deletedAccessTokenCookie.toString());
-        System.out.println(accessToken);
         response.setHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + accessToken);
     }
 }
