@@ -50,8 +50,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                     .build();
             member.updateAuthProvider(oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId());
             memberRepository.save(member);
-        } else {
-            throw new BadRequestException(ErrorMessage.ALREADY_EXIST_EMAIL);
         }
 
         return new PrincipalDetail(member, oAuth2User.getAttributes());

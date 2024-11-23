@@ -14,6 +14,8 @@ public record MemberSignUpRequest(
         String email,
         @NotBlank(message = "비밀번호 입력은 필수입니다.")
         @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&]).{8,16}$", message = "비밀번호는 영문, 숫자, 특수문자를 포함한 8~16자리여야 합니다.")
-        String password
+        String password,
+
+        String profileImageUrl
 ) {
 }

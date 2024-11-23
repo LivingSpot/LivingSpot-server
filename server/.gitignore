@@ -108,3 +108,5 @@ gradle-app.setting
 **/._.DS_Store
 
 **/application.yml
+
+**/resources/static/profile
