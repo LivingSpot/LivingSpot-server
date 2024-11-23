@@ -1,10 +1,12 @@
 package com.ssafy.living_spot.favorite.controller;
 
 import com.ssafy.living_spot.common.util.SecurityUtil;
+import com.ssafy.living_spot.favorite.dto.response.FavoriteHousesResponse;
 import com.ssafy.living_spot.favorite.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,5 +27,13 @@ public class FavoriteApi implements FavoriteSwaggerApi {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
         favoriteService.toggleFavorite(memberId, aptSeq);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @GetMapping("/list")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<FavoriteHousesResponse> getFavoriteList() {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        return ResponseEntity.ok().body(favoriteService.getFavoriteHouses(memberId));
     }
 }

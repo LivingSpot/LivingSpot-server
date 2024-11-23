@@ -29,7 +29,7 @@ public class MemberServiceTest {
 
     @BeforeAll
     public void setUp() {
-        MemberSignUpRequest memberSignUpRequest = new MemberSignUpRequest("이석환","ghks@gmail.com", "1234");
+        MemberSignUpRequest memberSignUpRequest = new MemberSignUpRequest("이석환","ghks@gmail.com", "1234", "test");
     }
 
     @Order(1)

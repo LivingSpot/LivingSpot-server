@@ -12,6 +12,7 @@ public class BaseException extends RuntimeException{
 
     HttpStatus status;
     ErrorMessage errorMessage;
+    AuthExceptionType authExceptionType;
 
     public BaseException(HttpStatus status, ErrorMessage errorMessage) {
         super(errorMessage.toString());
@@ -19,9 +20,9 @@ public class BaseException extends RuntimeException{
         this.errorMessage = errorMessage;
     }
 
-    public BaseException(HttpStatus status, AuthExceptionType errorMessage) {
-        super(errorMessage.toString());
+    public BaseException(HttpStatus status, AuthExceptionType authExceptionType) {
+        super(authExceptionType.toString());
         this.status = status;
-        this.errorMessage = ErrorMessage.valueOf(errorMessage.toString());
+        this.authExceptionType = authExceptionType;
     }
 }

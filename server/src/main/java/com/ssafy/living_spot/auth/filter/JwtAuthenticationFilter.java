@@ -73,6 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     processValidAccessToken(accessToken);
                 } else {
                     //Access Token이 만료된 경우
+                    System.out.println("Access Token is expired");
                     processExpiredAccessToken(request, response);
                 }
             }
