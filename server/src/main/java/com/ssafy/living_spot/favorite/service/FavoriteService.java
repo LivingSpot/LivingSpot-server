@@ -3,11 +3,14 @@ package com.ssafy.living_spot.favorite.service;
 import com.ssafy.living_spot.common.exception.BadRequestException;
 import com.ssafy.living_spot.common.exception.ErrorMessage;
 import com.ssafy.living_spot.favorite.domain.Favorite;
+import com.ssafy.living_spot.favorite.dto.response.FavoriteHousesResponse;
 import com.ssafy.living_spot.favorite.repository.jpa.FavoriteRepository;
 import com.ssafy.living_spot.house.domain.House;
+import com.ssafy.living_spot.house.dto.HouseInfoDto;
 import com.ssafy.living_spot.house.repository.jpa.HouseRepository;
 import com.ssafy.living_spot.member.domain.Member;
 import com.ssafy.living_spot.member.repository.jpa.MemberRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,5 +38,10 @@ public class FavoriteService {
                                 .house(house)
                                 .build())
                 );
+    }
+
+    public FavoriteHousesResponse getFavoriteHouses(Long memberId) {
+        List<HouseInfoDto> favoriteHouses = favoriteRepository.findAllByMemberId(memberId);
+        return new FavoriteHousesResponse(favoriteHouses);
     }
 }
