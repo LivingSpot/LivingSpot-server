@@ -3,6 +3,7 @@ package com.ssafy.living_spot.member.service;
 import com.ssafy.living_spot.member.domain.Member;
 import com.ssafy.living_spot.member.dto.request.MemberIdParam;
 import com.ssafy.living_spot.member.dto.request.MemberSignUpRequest;
+import java.nio.charset.StandardCharsets;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,8 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -26,8 +29,7 @@ public class MemberServiceTest {
 
     @BeforeAll
     public void setUp() {
-        MemberSignUpRequest memberSignUpRequest = new MemberSignUpRequest("이석환", "닉네임", "ghks@gmail.com", "1234");
-        memberId = memberService.signUp(memberSignUpRequest);
+        MemberSignUpRequest memberSignUpRequest = new MemberSignUpRequest("이석환","ghks@gmail.com", "1234");
     }
 
     @Order(1)

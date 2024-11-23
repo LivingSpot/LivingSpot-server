@@ -10,18 +10,26 @@ import com.ssafy.living_spot.common.exception.NotFoundException;
 import com.ssafy.living_spot.common.util.CookieUtil;
 import com.ssafy.living_spot.common.util.RedisUtil;
 import com.ssafy.living_spot.member.domain.Member;
+import com.ssafy.living_spot.member.domain.oauth.AuthProvider;
 import com.ssafy.living_spot.member.dto.request.MemberIdParam;
 import com.ssafy.living_spot.member.dto.request.MemberSignUpRequest;
 import com.ssafy.living_spot.member.dto.response.MemberProfileResponse;
 import com.ssafy.living_spot.member.repository.jpa.MemberRepository;
 import com.ssafy.living_spot.member.repository.mybatis.MemberMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +39,9 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final RedisUtil redisUtil;
 
+    @Value("${file.dir}")
+    private String fileDir;
+
     @Transactional
     public Long signUp(
             MemberSignUpRequest memberSignUpRequest
@@ -38,13 +49,18 @@ public class MemberService {
         if (memberRepository.existsByEmail(memberSignUpRequest.email())) {
             throw new BadRequestException(ALREADY_EXIST_EMAIL);
         }
+        String profileImageUrl = null;
+
+        if (memberSignUpRequest.profileImageUrl() != null) {
+            profileImageUrl = memberSignUpRequest.profileImageUrl();
+        }
 
         Member member = Member.builder()
                 .name(memberSignUpRequest.name())
                 .email(memberSignUpRequest.email())
                 .password(bCryptPasswordEncoder.encode(memberSignUpRequest.password()))
                 .role(ROLE_USER)
-                .profileImageUrl(null)
+                .profileImageUrl(profileImageUrl)
                 .build();
 
         return memberRepository.save(member).getId();
@@ -54,11 +70,21 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_EXIST_MEMBER));
 
+        String profileImageUrl = null;
+        if(member.getAuthProvider() == AuthProvider.LOCAL) {
+            if (member.getProfileImageUrl() != null) {
+                String filename = Paths.get(member.getProfileImageUrl()).getFileName().toString();
+                profileImageUrl = "/profile/" + filename;
+            }
+        }else{
+            profileImageUrl = member.getProfileImageUrl();
+        }
+        System.out.println("profileImageUrl = " + profileImageUrl);
         return new MemberProfileResponse(
                 member.getEmail(),
                 member.getName(),
                 member.getRole(),
-                member.getProfileImageUrl()
+                profileImageUrl
         );
     }
 
@@ -85,5 +111,25 @@ public class MemberService {
         redisUtil.delete(JwtConstants.REFRESH_TOKEN_PREFIX + memberId);
         ResponseCookie responseCookie = CookieUtil.deleteRefreshTokenCookie();
         response.addHeader("set-cookie", responseCookie.toString());
+    }
+
+    public String uploadImage(MultipartFile file) {
+        try {
+            String originalFilename = file.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String newFilename = UUID.randomUUID() + extension;
+
+            Path uploadPath = Paths.get(fileDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Path filePath = uploadPath.resolve(newFilename);
+            file.transferTo(filePath.toFile());
+
+            return fileDir + newFilename;
+        } catch (IOException e) {
+            throw new BadRequestException(ErrorMessage.FILE_UPLOAD_FAILED);
+        }
     }
 }

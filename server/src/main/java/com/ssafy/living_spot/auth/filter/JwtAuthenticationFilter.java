@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -39,7 +42,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    private static final AntPathRequestMatcher LOGIN_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/auth/login", HttpMethod.POST.toString());
+    private static final List<RequestMatcher> LOGIN_PATHS = Arrays.asList(
+            new AntPathRequestMatcher("/auth/login", HttpMethod.POST.toString()),
+            new AntPathRequestMatcher("/member/signup", HttpMethod.POST.toString()),
+            new AntPathRequestMatcher("/member/upload-profile-image", HttpMethod.POST.toString()),
+            new AntPathRequestMatcher("/profile/**", HttpMethod.GET.toString())
+    );
+
+    private static final RequestMatcher EXCLUDED_PATHS_REQUEST_MATCHER = new OrRequestMatcher(LOGIN_PATHS);
 
     @Override
     protected void doFilterInternal(
@@ -76,7 +86,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return LOGIN_PATH_REQUEST_MATCHER.matches(request);
+        boolean shouldNotFilter = EXCLUDED_PATHS_REQUEST_MATCHER.matches(request);
+        log.info("Should not filter for request [{}]: {}", request.getRequestURI(), shouldNotFilter);
+        return shouldNotFilter;
     }
 
     private String extractAccessToken(HttpServletRequest request) {
