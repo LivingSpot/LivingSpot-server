@@ -66,14 +66,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String accessToken = extractAccessToken(request);
             log.info("Access Token: {}", accessToken);
             if (accessToken != null) {
-                jwtTokenValidator.validateToken(accessToken);
                 // Access Token이 만료되었는지 확인
                 if (!jwtUtil.isExpired(accessToken)) {
                     //Access Token이 유효한 경우
+                    jwtTokenValidator.validateToken(accessToken);
+
                     processValidAccessToken(accessToken);
                 } else {
                     //Access Token이 만료된 경우
-                    System.out.println("Access Token is expired");
                     processExpiredAccessToken(request, response);
                 }
             }
@@ -109,7 +109,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 null,
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role))
         );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
@@ -122,7 +121,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (refreshTokenCookie.isPresent()) {
             String refreshToken = refreshTokenCookie.get().getValue();
-
             jwtTokenValidator.validateToken(refreshToken);
 
             // Refresh Token이 만료되지 않았는지 확인
