@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface FavoriteSwaggerApi {
 
     @ApiResponse(responseCode = "200", description = "찜 목록 추가/삭제")
-    ResponseEntity<?> toggleFavorite(@RequestParam String aptSeq);
+    ResponseEntity<?> toggleFavorite(@RequestParam Long dealId);
+
+    @ApiResponse(responseCode = "200", description = "찜 목록 삭제")
+    ResponseEntity<Void> deleteFavorite(@RequestParam("houseDealNo") Long houseDealNo);
 
     @ApiResponse(responseCode = "200", description = "찜 목록 목록 조회")
     ResponseEntity<FavoriteHousesResponse> getFavoriteList();
