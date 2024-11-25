@@ -1,11 +1,13 @@
 package com.ssafy.living_spot.house.dto;
 
+import java.math.BigDecimal;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
-@Getter @Setter
+@Getter
+@Setter
+@NoArgsConstructor
 public class HouseDealDto {
     private Integer no;
     private String aptSeq;
@@ -20,7 +22,8 @@ public class HouseDealDto {
 
     @Override
     public String toString() {
-        return "아파트 정보: ["+getHouseInfo().toString()+"] 거래 일자: " + getDealYear()+ ". " + getDealMonth() + ". " + getDealDay() + " 거래 액: " + getDealAmount() +" 전용 면적: " + getExcluUseAr();
+        return "아파트 정보: [" + getHouseInfo().toString() + "] 거래 일자: " + getDealYear() + ". " + getDealMonth() + ". "
+                + getDealDay() + " 거래 액: " + getDealAmount() + " 전용 면적: " + getExcluUseAr();
     }
 
 

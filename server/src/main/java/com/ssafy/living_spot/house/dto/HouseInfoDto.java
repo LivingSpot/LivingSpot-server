@@ -1,9 +1,14 @@
 package com.ssafy.living_spot.house.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class HouseInfoDto {
     private String aptSeq;
     private String sggCd;
@@ -19,11 +24,9 @@ public class HouseInfoDto {
     private String latitude;
     private String longitude;
 
-
-
     @Override
     public String toString() {
-        return "아파트 이름: " + getAptNm() +" 도로명 주소: " + getRoadNm() + " 건축 연도: " + getBuildYear();
+        return "아파트 이름: " + getAptNm() + " 도로명 주소: " + getRoadNm() + " 건축 연도: " + getBuildYear();
 
 //		return "HouseInfoDto [aptSeq=" + aptSeq + ", sggCd=" + sggCd + ", umdCd=" + umdCd + ", umdNm=" + umdNm
 //				+ ", jibun=" + jibun + ", roadNmSggCd=" + roadNmSggCd + ", roadNm=" + roadNm + ", roadNmBonbun="
@@ -36,5 +39,4 @@ public class HouseInfoDto {
 //				+ getLatitude() + ", getLongitude()=" + getLongitude() + ", getClass()=" + getClass() + ", hashCode()="
 //				+ hashCode() + ", toString()=" + super.toString() + "]";
     }
-
 }

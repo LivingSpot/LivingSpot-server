@@ -1,7 +1,7 @@
 package com.ssafy.living_spot.favorite.domain;
 
 import com.ssafy.living_spot.common.auditing.BaseTimeEntity;
-import com.ssafy.living_spot.house.domain.House;
+import com.ssafy.living_spot.house.domain.HouseDeal;
 import com.ssafy.living_spot.member.domain.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,12 +33,12 @@ public class Favorite extends BaseTimeEntity {
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "apt_seq", nullable = false)
-    private House house;
+    @JoinColumn(name = "housedeal_no", nullable = false)
+    private HouseDeal houseDeal;
 
     @Builder
-    public Favorite(Member member, House house) {
+    public Favorite(Member member, HouseDeal houseDeal) {
         this.member = member;
-        this.house = house;
+        this.houseDeal = houseDeal;
     }
 }
