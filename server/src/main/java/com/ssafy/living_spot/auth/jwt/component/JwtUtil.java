@@ -6,6 +6,7 @@ import com.ssafy.living_spot.auth.dto.MemberTokenInfo;
 import com.ssafy.living_spot.auth.dto.response.JwtToken;
 import com.ssafy.living_spot.common.util.RedisUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +62,13 @@ public class JwtUtil {
     }
 
     public Boolean isExpired(String token) {
-        return getClaims(token).getExpiration().before(new Date());
+        try {
+            Date expiration = getClaims(token).getExpiration();
+            return expiration.before(new Date());
+        } catch (ExpiredJwtException e) {
+            // 토큰이 만료되었음을 명시적으로 true로 반환
+            return true;
+        }
     }
 
     private Claims getClaims(String token) {
