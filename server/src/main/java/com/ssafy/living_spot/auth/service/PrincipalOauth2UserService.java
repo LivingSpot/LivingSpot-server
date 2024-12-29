@@ -1,7 +1,5 @@
 package com.ssafy.living_spot.auth.service;
 
-import com.ssafy.living_spot.common.exception.BadRequestException;
-import com.ssafy.living_spot.common.exception.ErrorMessage;
 import com.ssafy.living_spot.member.domain.Member;
 import com.ssafy.living_spot.member.domain.PrincipalDetail;
 import com.ssafy.living_spot.member.domain.Role;
