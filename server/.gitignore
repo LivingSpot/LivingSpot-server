@@ -111,4 +111,4 @@ gradle-app.setting
 
 **/resources/static/profile
 
-docker-compose.yml
+*.yml
