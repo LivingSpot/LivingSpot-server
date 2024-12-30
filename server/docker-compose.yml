@@ -1,0 +1,38 @@
+services:
+  app:
+    image: living-spot
+    build:
+      context: src/main/java
+    ports:
+      - "8080:8080"
+    networks:
+      - my-custom-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/ssafyhome?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: ssafy
+      SPRING_DATASOURCE_PASSWORD: ssafy
+      SPRING_REDIS_HOST: redis-container
+      SPRING_REDIS_PORT: 6379
+
+  mysql-container:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    networks:
+      - my-custom-network
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ssafyhome
+      MYSQL_USER: ssafy
+      MYSQL_PASSWORD: ssafy
+
+  local-redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - my-custom-network
+
+networks:
+  my-custom-network:
+    driver: bridge
